@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.pyo
+*.npy
+.DS_Store
+xhand_isaaclab_env/test_output/

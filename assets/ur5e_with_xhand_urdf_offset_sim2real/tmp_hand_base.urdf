@@ -1,0 +1,38 @@
+<robot name="tmp">
+  <material name="RAL_9003_Signal_White">
+    <color rgba="0.941 0.941 0.941 1" />
+  </material>
+  <material name="RAL_9005_Jet_Black">
+    <color rgba="0.055 0.055 0.063 1" />
+  </material>
+
+  <link name="tmp_link">
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/left_hand_link.STL"/>
+      </geometry>
+      <material name="RAL_9005_Jet_Black"/>
+    </visual>
+  </link>
+
+
+  <joint name="tmp_joint" type="fixed">
+    <parent link="tmp_link"/>
+    <child link="marker"/>
+    <origin rpy="0 0 0" xyz="0 0 -0.005"/>
+  </joint>
+  <link name="marker">
+    <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <sphere radius="0.0002"/>
+    </geometry>
+    <material name="RAL_9003_Signal_White"/>
+    </visual>
+  </link>
+
+</robot>
