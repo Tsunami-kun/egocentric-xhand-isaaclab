@@ -127,11 +127,11 @@ XHAND_RIGHT_JOINT_NAMES = [
 
 CAMERA_WIDTH = 1920
 CAMERA_HEIGHT = 1440
-CAMERA_FOVY_RAD = math.radians(70.0)
+CAMERA_FOVY_RAD = math.radians(65.0)
 
-# Virtual robot-head frame centered between the two arm bases.
-# Move the eye point substantially closer to the manipulation zone while
-# keeping a high human-over-desk viewing angle.
-FIRST_PERSON_CAMERA_POS = (-0.02, 0.0, TABLE_HEIGHT + 1.32)
-FIRST_PERSON_CAMERA_TARGET = (0.34, 0.0, TABLE_HEIGHT - 0.01)
-FIRST_PERSON_CAMERA_UP = (0.0, 0.0, 1.0)
+# Main third-person spectator camera.
+# Place the eye beyond the far edge of the desk and look back toward the
+# bimanual workspace so both arms, hands, object, and tabletop stay in frame.
+MAIN_CAMERA_POS = (1.85, 0.0, TABLE_HEIGHT + 0.95)
+MAIN_CAMERA_TARGET = (0.55, 0.0, TABLE_HEIGHT + 0.08)
+MAIN_CAMERA_UP = (0.0, 0.0, 1.0)

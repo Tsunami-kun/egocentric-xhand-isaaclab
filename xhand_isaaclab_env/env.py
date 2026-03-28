@@ -3,7 +3,7 @@ Isaac Lab Dual-Arm UR5E + XHand Environment
 
 Self-contained environment for dual-arm manipulation with:
 - Two UR5E robotic arms with 12-DOF XHand grippers
-- Robot-head first-person RGBD camera
+- Third-person RGBD camera
 - Table workspace with optional object
 
 Usage:
@@ -30,15 +30,15 @@ from xhand_isaaclab_env.config import (
     CAMERA_HEIGHT,
     CAMERA_WIDTH,
     CONTROL_FREQ,
-    FIRST_PERSON_CAMERA_POS,
-    FIRST_PERSON_CAMERA_TARGET,
-    FIRST_PERSON_CAMERA_UP,
     FRAME_SKIP,
     JOINT_DAMPING,
     JOINT_STIFFNESS,
     LEFT_HOME_QPOS,
     LEFT_USD,
     LEFT_URDF,
+    MAIN_CAMERA_POS,
+    MAIN_CAMERA_TARGET,
+    MAIN_CAMERA_UP,
     OBJECT_MESH,
     PHYSICS_DT,
     RIGHT_HOME_QPOS,
@@ -212,11 +212,11 @@ class DualArmXHandEnv:
         self.sim = SimulationContext(sim_cfg)
         self.device = device
 
-        # Set viewport to first-person view
+        # Set viewport to the main third-person view
         try:
             self.sim.set_camera_view(
-                eye=FIRST_PERSON_CAMERA_POS,
-                target=FIRST_PERSON_CAMERA_TARGET,
+                eye=MAIN_CAMERA_POS,
+                target=MAIN_CAMERA_TARGET,
             )
         except Exception:
             pass
@@ -282,7 +282,7 @@ class DualArmXHandEnv:
         self.robot_right = Articulation(self._make_robot_cfg(
             self.right_usd, "/World/RobotRight", (0.0, -0.45, TABLE_HEIGHT), is_left=False))
 
-        # Robot-head first-person RGBD camera
+        # Main third-person RGBD camera
         self.camera = self._make_camera()
 
         # Object
@@ -351,13 +351,13 @@ class DualArmXHandEnv:
         focal_length = 24.0
 
         quat = _compute_camera_quat(
-            FIRST_PERSON_CAMERA_POS,
-            FIRST_PERSON_CAMERA_TARGET,
-            FIRST_PERSON_CAMERA_UP,
+            MAIN_CAMERA_POS,
+            MAIN_CAMERA_TARGET,
+            MAIN_CAMERA_UP,
         )
 
         cfg = CameraCfg(
-            prim_path="/World/Cameras/FirstPerson",
+            prim_path="/World/Cameras/MainView",
             update_period=0.0,
             height=CAMERA_HEIGHT,
             width=CAMERA_WIDTH,
@@ -369,7 +369,7 @@ class DualArmXHandEnv:
                 clipping_range=(0.01, 10.0),
             ),
             offset=CameraCfg.OffsetCfg(
-                pos=FIRST_PERSON_CAMERA_POS,
+                pos=MAIN_CAMERA_POS,
                 rot=quat,
                 convention="world",
             ),
