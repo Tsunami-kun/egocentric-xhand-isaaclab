@@ -125,13 +125,13 @@ XHAND_RIGHT_JOINT_NAMES = [
 # Camera Configuration
 # =============================================================================
 
-CAMERA_WIDTH = 1280
-CAMERA_HEIGHT = 960
+CAMERA_WIDTH = 1920
+CAMERA_HEIGHT = 1440
 CAMERA_FOVY_RAD = math.radians(70.0)
 
 # Virtual robot-head frame centered between the two arm bases.
-# Keep the high over-the-desk viewpoint, but pull the eye point forward so the
-# hands and tabletop feel closer while preserving a strong top-down gaze.
-FIRST_PERSON_CAMERA_POS = (-0.20, 0.0, TABLE_HEIGHT + 1.60)
-FIRST_PERSON_CAMERA_TARGET = (0.24, 0.0, TABLE_HEIGHT - 0.05)
+# Move the eye point substantially closer to the manipulation zone while
+# keeping a high human-over-desk viewing angle.
+FIRST_PERSON_CAMERA_POS = (-0.02, 0.0, TABLE_HEIGHT + 1.32)
+FIRST_PERSON_CAMERA_TARGET = (0.34, 0.0, TABLE_HEIGHT - 0.01)
 FIRST_PERSON_CAMERA_UP = (0.0, 0.0, 1.0)

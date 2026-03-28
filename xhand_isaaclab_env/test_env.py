@@ -37,9 +37,9 @@ env = DualArmXHandEnv(
     with_object=not getattr(args, "no_object", False),
 )
 
-# Step a few more times to let rendering settle
+# Step longer to let lighting / rendering settle before capture
 home_action = np.concatenate([LEFT_HOME_QPOS, RIGHT_HOME_QPOS])
-for _ in range(10):
+for _ in range(30):
     env.step(action=home_action, get_obs=False)
 
 obs = env.get_obs()
@@ -57,18 +57,27 @@ if "rgb" in obs:
 
 if "depth" in obs:
     depth = obs["depth"]
-    # Normalize depth for visualization (clip to 3m, map to 0-255)
-    depth_vis = depth.copy()
-    depth_vis[depth_vis > 3.0] = 3.0
-    depth_vis[depth_vis < 0.01] = 0.0
-    if depth_vis.max() > 0:
-        depth_vis = (depth_vis / depth_vis.max() * 255).astype(np.uint8)
+    # Use percentile clipping and inverse mapping so near geometry has better contrast.
+    valid = np.isfinite(depth) & (depth > 0.01)
+    if np.any(valid):
+        near = float(np.percentile(depth[valid], 5.0))
+        far = float(np.percentile(depth[valid], 95.0))
+        if far <= near:
+            far = near + 1e-3
+        depth_vis = np.clip(depth, near, far)
+        depth_vis = 1.0 - (depth_vis - near) / (far - near)
+        depth_vis = (depth_vis * 255).clip(0, 255).astype(np.uint8)
     else:
         depth_vis = np.zeros_like(depth, dtype=np.uint8)
     Image.fromarray(depth_vis).save(os.path.join(out_dir, "depth.png"))
+    depth_mm = np.clip(depth, 0.0, 65.535) * 1000.0
+    Image.fromarray(depth_mm.astype(np.uint16)).save(os.path.join(out_dir, "depth_16bit.png"))
     # Also save raw depth as .npy
     np.save(os.path.join(out_dir, "depth_raw.npy"), depth)
-    print(f"Saved depth.png + depth_raw.npy  shape={depth.shape} range=[{depth.min():.3f}, {depth.max():.3f}]m")
+    print(
+        f"Saved depth.png + depth_16bit.png + depth_raw.npy  "
+        f"shape={depth.shape} range=[{depth.min():.3f}, {depth.max():.3f}]m"
+    )
 
 # Print joint state summary
 print(f"\nqpos_0 (left):  {obs['qpos_0'][:6]}  (arm)")
